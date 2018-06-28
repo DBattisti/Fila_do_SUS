@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <algorithm>
 #include <math.h>
 
 using namespace std;
@@ -34,14 +35,19 @@ class SUSQueue
     void PushHeap(Patient p)
     {
         sus.push_back(p);
-        float index = sus.size() - 1;
-        while (sus.at(index).maxTime < sus.at(floor(index / 2)).maxTime && index > 0)
-        {
-            Patient aux = sus.at(index);
-            sus.at(index) = sus.at(floor(index / 2));
-            sus.at(floor(index / 2)) = aux;
 
-            index = floor(index / 2);
+        int child_index = last_index();
+
+        int parent_value = sus.at(parent(child_index)).maxTime;
+        int child_value = sus.at(child_index).maxTime;
+
+        while (child_value < parent_value && child_index > 0)
+        {
+            swap_index(child_index, parent(child_index));
+            child_index = parent(child_index);
+
+            parent_value = sus.at(parent(child_index)).maxTime;
+            child_value = sus.at(child_index).maxTime;
         }
     }
 
@@ -51,17 +57,107 @@ class SUSQueue
     */
     Patient PopHeap()
     {
-        Patient p = sus.front();
-        // TODO trocar o topo com o ultimo elemento e rabaixar
+        swap_index(0, last_index());
+        Patient p = sus.back();
+        sus.pop_back();
+
+        int parent_index = 0;
+        while (parent_index <= floor(last_index() / 2) && parent_index >= 0)
+        {
+            int parent_value = sus.at(parent_index).maxTime;
+            int left_value = sus.at(left_child(parent_index)).maxTime;
+            int right_value = sus.at(right_child(parent_index)).maxTime;
+
+            if (left_value < right_value)
+            {
+                if (left_value < parent_value)
+                {
+                    swap_index(parent_index, left_child(parent_index));
+                    parent_index = left_child(parent_index);
+                }
+            }
+            else if (right_value < left_value)
+            {
+                if (right_value < parent_value)
+                {
+                    swap_index(parent_index, right_child(parent_index));
+                    parent_index = right_child(parent_index);
+                }
+            }
+            else
+            {
+                parent_index = -1;
+            }
+        }
+
         return p;
     }
 
     /**
     Verifica se o vector e um heap minimo
     */
-    void IsMinHeap()
+    void
+    IsMinHeap()
     {
         // TODO verificar se o vector e um heap
+    }
+
+    /**
+    Troca os elementos nas posicoes indicadas pelos parametros
+    */
+    void swap_index(int index, int other_index)
+    {
+        Patient aux = sus.at(index);
+        sus.at(index) = sus.at(other_index);
+        sus.at(other_index) = aux;
+    }
+
+    /**
+    Retorna o index do filho a esquerda
+    */
+    int left_child(int index)
+    {
+        int left = (index * 2) + 1;
+        if (left > last_index())
+        {
+            return index;
+        }
+        else
+        {
+            return left;
+        }
+    }
+
+    /**
+    Retorna o index do filho a direita
+    */
+    int right_child(int index)
+    {
+        int right = (index * 2) + 2;
+        if (right > last_index())
+        {
+            return index;
+        }
+        else
+        {
+            return right;
+        }
+    }
+
+    /**
+    Retorna o index do pai
+    */
+    int parent(int index)
+    {
+        return floor(index / 2);
+    }
+
+    /**
+    Retorna o ultimo index do vector
+    */
+    int last_index()
+    {
+        return sus.size() - 1;
     }
 
   public:
@@ -69,7 +165,10 @@ class SUSQueue
     Retorna o proximo paciente da fila
     @return o proximo paciente
     */
-    Patient NextOfQueue();
+    Patient NextOfQueue()
+    {
+        return PopHeap();
+    }
 
     /**
     Metodo de triagem, recebe um paciente e o coloca na posicao adequada
@@ -86,6 +185,7 @@ class SUSQueue
         {
             cout << it->maxTime << "\n";
         }
+        cout << "\n";
     }
 };
 
@@ -112,6 +212,19 @@ int main(int argc, char const *argv[])
     susq->Screening(*p4);
 
     susq->Print();
+
+    cout << susq->NextOfQueue().maxTime << "\n\n";
+
+    susq->Print();
+
+    cout << susq->NextOfQueue().maxTime << "\n\n";
+
+    susq->Print();
+
+    cout << susq->NextOfQueue().maxTime << "\n\n";
+
+    susq->Print();
+
     //#######
 
     return 0;
