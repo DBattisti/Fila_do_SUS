@@ -2,6 +2,9 @@
 #include <vector>
 #include <algorithm>
 #include <math.h>
+#include <string>
+
+#define NUMPAT 4
 
 using namespace std;
 
@@ -14,6 +17,17 @@ struct Patient
 {
     int arrivalTime;
     int maxTime;
+};
+
+/**
+    Estrutura para o lancamento de excecoes
+*/
+struct MyException : public exception
+{
+    std::string s;
+    MyException(std::string ss) : s(ss) {}
+    ~MyException() throw() {}
+    const char *what() const throw() { return s.c_str(); }
 };
 
 /**
@@ -61,6 +75,11 @@ class SUSQueue
         Patient p = sus.back();
         sus.pop_back();
 
+        if (sus.size() == 0)
+        {
+            return p;
+        }
+
         int parent_index = 0;
         while (parent_index <= floor(last_index() / 2) && parent_index >= 0)
         {
@@ -75,6 +94,10 @@ class SUSQueue
                     swap_index(parent_index, left_child(parent_index));
                     parent_index = left_child(parent_index);
                 }
+                else if (left_value == parent_value)
+                {
+                    parent_index = -1;
+                }
             }
             else if (right_value < left_value)
             {
@@ -82,6 +105,10 @@ class SUSQueue
                 {
                     swap_index(parent_index, right_child(parent_index));
                     parent_index = right_child(parent_index);
+                }
+                else if (right_value == parent_value)
+                {
+                    parent_index = -1;
                 }
             }
             else
@@ -145,11 +172,11 @@ class SUSQueue
     }
 
     /**
-    Retorna o index do pai
+    Retorna o index do pai. se o index for 0 então retorna 0
     */
     int parent(int index)
     {
-        return floor(index / 2);
+        return floor((index - 1) / 2);
     }
 
     /**
@@ -162,12 +189,27 @@ class SUSQueue
 
   public:
     /**
+    Inicializa o tempo global das filas;
+    */
+    static void InitTime()
+    {
+        currentTime = 0;
+    }
+
+    /**
     Retorna o proximo paciente da fila
     @return o proximo paciente
     */
     Patient NextOfQueue()
     {
-        return PopHeap();
+        if (!sus.empty())
+        {
+            return PopHeap();
+        }
+        else
+        {
+            throw MyException("A fila esta vazia");
+        }
     }
 
     /**
@@ -181,9 +223,14 @@ class SUSQueue
 
     void Print()
     {
+        cout << "Pessoas na fila: " << sus.size() << endl;
+        cout << "[pos] maxTime"
+             << "\n";
+        int i = 0;
         for (vector<Patient>::iterator it = sus.begin(); it != sus.end(); it++)
         {
-            cout << it->maxTime << "\n";
+            cout << "[" << i << "] " << it->maxTime << endl;
+            i++;
         }
         cout << "\n";
     }
@@ -193,37 +240,32 @@ int main(int argc, char const *argv[])
 {
     //Debugando a insercao dos nos
     //#######
-    Patient *p = new Patient;
-    p->maxTime = 20;
-
-    Patient *p2 = new Patient;
-    p2->maxTime = 15;
-
-    Patient *p3 = new Patient;
-    p3->maxTime = 12;
-
-    Patient *p4 = new Patient;
-    p4->maxTime = 13;
-
     SUSQueue *susq = new SUSQueue;
-    susq->Screening(*p);
-    susq->Screening(*p2);
-    susq->Screening(*p3);
-    susq->Screening(*p4);
+
+    //Adiciona @NUMPAT pacientes na fila com tempos aleatorios
+    for (int i = 0; i < NUMPAT; i++)
+    {
+        Patient *p = new Patient;
+        p->maxTime = rand() % 100;
+
+        susq->Screening(*p);
+    }
 
     susq->Print();
 
-    cout << susq->NextOfQueue().maxTime << "\n\n";
-
-    susq->Print();
-
-    cout << susq->NextOfQueue().maxTime << "\n\n";
-
-    susq->Print();
-
-    cout << susq->NextOfQueue().maxTime << "\n\n";
-
-    susq->Print();
+    //Tenta remover @NUMPAT pacientes na fila
+    for (int i = 0; i < NUMPAT; i++)
+    {
+        try
+        {
+            Patient p = susq->NextOfQueue();
+            cout << p.maxTime << endl;
+        }
+        catch (MyException e)
+        {
+            cout << e.what() << endl;
+        }
+    }
 
     //#######
 
