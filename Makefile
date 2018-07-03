@@ -21,4 +21,4 @@ run: $(PROGRAM_NAME)
 	./$(PROGRAM_NAME)
 
 clean:
-	$(RM) $(OBJS)
+	$(RM) $(OBJS) $(PROGRAM_NAME)

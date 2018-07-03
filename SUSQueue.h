@@ -21,8 +21,8 @@ struct Patient
 */
 struct MyException : public exception
 {
-    std::string s;
-    MyException(std::string ss) : s(ss) {}
+    string s;
+    MyException(string ss) : s(ss) {}
     ~MyException() throw() {}
     const char *what() const throw() { return s.c_str(); }
 };

@@ -31,39 +31,54 @@ Patient SUSQueue::PopHeap()
     }
 
     int parent_index = 0;
-    while (parent_index <= floor(last_index() / 2) && parent_index >= 0)
+    //Enquanto ele nao for uma folha e nao for um numero invalido
+    while (parent_index <= parent(last_index()) && parent_index >= 0)
     {
         int parent_value = sus.at(parent_index).maxTime;
-        int left_value = sus.at(left_child(parent_index)).maxTime;
-        int right_value = sus.at(right_child(parent_index)).maxTime;
+        int left_index = left_child(parent_index);
+        int left_value = sus.at(left_index).maxTime;
 
-        if (left_value < right_value)
+        int right_index = right_child(parent_index);
+        if (right_index > 0)
         {
-            if (left_value < parent_value)
+            int right_value = sus.at(right_index).maxTime;
+
+            if (left_value < right_value)
             {
-                swap_index(parent_index, left_child(parent_index));
-                parent_index = left_child(parent_index);
+                if (left_value < parent_value)
+                {
+                    swap_index(parent_index, left_index);
+                    parent_index = left_child(parent_index);
+                }
+                else if (left_value == parent_value)
+                {
+                    parent_index = -1;
+                }
             }
-            else if (left_value == parent_value)
+            else if (right_value < left_value)
             {
-                parent_index = -1;
-            }
-        }
-        else if (right_value < left_value)
-        {
-            if (right_value < parent_value)
-            {
-                swap_index(parent_index, right_child(parent_index));
-                parent_index = right_child(parent_index);
-            }
-            else if (right_value == parent_value)
-            {
-                parent_index = -1;
+                if (right_value < parent_value)
+                {
+                    swap_index(parent_index, right_index);
+                    parent_index = right_index;
+                }
+                else if (right_value == parent_value)
+                {
+                    parent_index = -1;
+                }
             }
         }
         else
         {
-            parent_index = -1;
+            if (left_value < parent_value)
+            {
+                swap_index(parent_index, left_index);
+                parent_index = right_child(parent_index);
+            }
+            else
+            {
+                parent_index = -1;
+            }
         }
     }
 
@@ -87,7 +102,7 @@ int SUSQueue::left_child(int index)
     int left = (index * 2) + 1;
     if (left > last_index())
     {
-        return index;
+        return -1;
     }
     else
     {
@@ -100,7 +115,7 @@ int SUSQueue::right_child(int index)
     int right = (index * 2) + 2;
     if (right > last_index())
     {
-        return index;
+        return -1;
     }
     else
     {

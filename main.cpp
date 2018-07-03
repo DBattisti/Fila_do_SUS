@@ -1,6 +1,6 @@
 #include "SUSQueue.h"
 
-#define NUMPAT 4
+#define NUMPAT 10
 
 int main(int argc, char const *argv[])
 {

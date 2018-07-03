@@ -1,3 +1,6 @@
-# exclude everything int directory .vscode
+# exclude everything on directory .vscode
 /.vscode
+
+# exclude everything with .exe and .o
 *.exe
+*.o
