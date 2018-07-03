@@ -1,18 +1,20 @@
 #include <iostream>
 #include <vector>
-#include <math.h>
 #include <string>
+
+#define TIMESTEP 30
+#define MAXTIME 720
 
 using namespace std;
 
 /**
     Estrutura de cada paciente
-    @arrivalTime tempo em que ele chegou na triagem.
+    @timeLeft tempo em que ele chegou na triagem.
     @maxTime tempo maximo para piorar o seu estado de saude
 */
 struct Patient
 {
-    int arrivalTime;
+    int timeLeft;
     int maxTime;
 };
 
@@ -36,7 +38,7 @@ class SUSQueue
 {
   private:
     vector<Patient> sus;
-    static int currentTime;
+    int currentTime;
 
   private:
     /**
@@ -86,7 +88,7 @@ class SUSQueue
     /**
     Inicializa o tempo global das filas;
     */
-    static void InitTime();
+    SUSQueue();
 
     /**
     Retorna o proximo paciente da fila
@@ -99,6 +101,8 @@ class SUSQueue
     @param o paciente que vai passar pela triagem
     */
     void Screening(Patient newPatient);
+
+    bool IsFinished();
 
     void Print();
 };

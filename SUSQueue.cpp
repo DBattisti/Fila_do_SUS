@@ -1,4 +1,10 @@
 #include "SUSQueue.h"
+#include <math.h>
+
+SUSQueue::SUSQueue()
+{
+    currentTime = 0;
+}
 
 void SUSQueue::PushHeap(Patient p)
 {
@@ -25,7 +31,7 @@ Patient SUSQueue::PopHeap()
     Patient p = sus.back();
     sus.pop_back();
 
-    if (sus.size() == 0)
+    if (sus.size() <= 1)
     {
         return p;
     }
@@ -35,6 +41,7 @@ Patient SUSQueue::PopHeap()
     while (parent_index <= parent(last_index()) && parent_index >= 0)
     {
         int parent_value = sus.at(parent_index).maxTime;
+
         int left_index = left_child(parent_index);
         int left_value = sus.at(left_index).maxTime;
 
@@ -48,9 +55,9 @@ Patient SUSQueue::PopHeap()
                 if (left_value < parent_value)
                 {
                     swap_index(parent_index, left_index);
-                    parent_index = left_child(parent_index);
+                    parent_index = left_index;
                 }
-                else if (left_value == parent_value)
+                else
                 {
                     parent_index = -1;
                 }
@@ -62,7 +69,7 @@ Patient SUSQueue::PopHeap()
                     swap_index(parent_index, right_index);
                     parent_index = right_index;
                 }
-                else if (right_value == parent_value)
+                else
                 {
                     parent_index = -1;
                 }
@@ -133,15 +140,12 @@ int SUSQueue::last_index()
     return sus.size() - 1;
 }
 
-void SUSQueue::InitTime()
-{
-    //currentTime = 0;
-}
-
 Patient SUSQueue::NextOfQueue()
 {
     if (!sus.empty())
     {
+        currentTime += TIMESTEP;
+        cout << "Um paciente vai ser atendido, agora sao: " << currentTime << " minutos" << endl;
         return PopHeap();
     }
     else
@@ -152,6 +156,8 @@ Patient SUSQueue::NextOfQueue()
 
 void SUSQueue::Screening(Patient newPatient)
 {
+    newPatient.maxTime = newPatient.timeLeft + currentTime;
+    cout << "Um paciente entrou na fila, o seu tempo maximo e: " << newPatient.maxTime << endl;
     PushHeap(newPatient);
 }
 
@@ -167,4 +173,11 @@ void SUSQueue::Print()
         i++;
     }
     cout << "\n";
+}
+
+bool SUSQueue::IsFinished(){
+    if (currentTime >= 720){
+        return true;
+    }
+    return false;
 }
