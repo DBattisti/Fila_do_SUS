@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <fstream>
 
 #define TIMESTEP 30
 #define MAXTIME 720
@@ -9,7 +10,7 @@ using namespace std;
 
 /**
     Estrutura de cada paciente
-    @timeLeft tempo em que ele chegou na triagem.
+    @timeLeft 
     @maxTime tempo maximo para piorar o seu estado de saude
 */
 struct Patient
@@ -37,6 +38,9 @@ struct MyException : public exception
 class SUSQueue
 {
   private:
+    ofstream screening_log;
+    ofstream treatment_log;
+
     vector<Patient> sus;
     int currentTime;
 
@@ -91,6 +95,11 @@ class SUSQueue
     SUSQueue();
 
     /**
+    Fecha os arquivos
+    */
+    ~SUSQueue();
+
+    /**
     Retorna o proximo paciente da fila
     @return o proximo paciente
     */
@@ -105,4 +114,6 @@ class SUSQueue
     bool IsFinished();
 
     void Print();
+
+    void PrintInLine();
 };

@@ -4,6 +4,14 @@
 SUSQueue::SUSQueue()
 {
     currentTime = 0;
+    screening_log.open("screening_log.txt");
+    treatment_log.open("treatment_log.txt");
+}
+
+SUSQueue::~SUSQueue()
+{
+    screening_log.close();
+    treatment_log.close();
 }
 
 void SUSQueue::PushHeap(Patient p)
@@ -145,8 +153,14 @@ Patient SUSQueue::NextOfQueue()
     if (!sus.empty())
     {
         currentTime += TIMESTEP;
-        cout << "Um paciente vai ser atendido, agora sao: " << currentTime << " minutos" << endl;
-        return PopHeap();
+
+        Patient p = PopHeap();
+
+        treatment_log << "SAIU::"
+                      << " tempo corrente[" << currentTime << "]"
+                      << " tempo maximo paciente[" << p.maxTime << "]" << endl;
+
+        return p;
     }
     else
     {
@@ -157,7 +171,12 @@ Patient SUSQueue::NextOfQueue()
 void SUSQueue::Screening(Patient newPatient)
 {
     newPatient.maxTime = newPatient.timeLeft + currentTime;
-    cout << "Um paciente entrou na fila, o seu tempo maximo e: " << newPatient.maxTime << endl;
+
+    screening_log << "ENTROU::"
+                  << " tempo corrente[" << currentTime << "]"
+                  << " tempo restante[" << newPatient.timeLeft << "]"
+                  << " tempo maximo[" << newPatient.maxTime << "]" << endl;
+
     PushHeap(newPatient);
 }
 
@@ -175,8 +194,23 @@ void SUSQueue::Print()
     cout << "\n";
 }
 
-bool SUSQueue::IsFinished(){
-    if (currentTime >= 720){
+void SUSQueue::PrintInLine()
+{
+    int i = 0;
+    cout << "[";
+    for (vector<Patient>::iterator it = sus.begin(); it != sus.end(); it++)
+    {
+        cout << it->maxTime << ", ";
+        i++;
+    }
+    cout << "]";
+    cout << "\n";
+}
+
+bool SUSQueue::IsFinished()
+{
+    if (currentTime >= 720)
+    {
         return true;
     }
     return false;
