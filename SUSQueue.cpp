@@ -100,11 +100,6 @@ Patient SUSQueue::PopHeap()
     return p;
 }
 
-void SUSQueue::IsMinHeap()
-{
-    // TODO verificar se o vector e um heap
-}
-
 void SUSQueue::swap_index(int index, int other_index)
 {
     Patient aux = sus.at(index);
@@ -159,6 +154,10 @@ Patient SUSQueue::NextOfQueue()
         treatment_log << "SAIU::"
                       << " tempo corrente[" << currentTime << "]"
                       << " tempo maximo paciente[" << p.maxTime << "]" << endl;
+        
+        if (p.maxTime < currentTime){
+           treatment_log << "PERIGO:: Esse paciente extrapolou o tempo maximo de atendimento!"; 
+        }
 
         return p;
     }

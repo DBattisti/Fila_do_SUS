@@ -4,6 +4,7 @@ RM=rm -f
 
 SRCS=main.cpp SUSQueue.cpp
 OBJS=SUSQueue.o main.o
+LOGS=screening_log.txt treatment_log.txt
 
 all: $(OBJS)
 	$(CXX) -o $(PROGRAM_NAME) $(OBJS)
@@ -21,4 +22,4 @@ run: $(PROGRAM_NAME)
 	./$(PROGRAM_NAME)
 
 clean:
-	$(RM) $(OBJS) $(PROGRAM_NAME)
+	$(RM) $(OBJS) $(PROGRAM_NAME) $(LOGS)

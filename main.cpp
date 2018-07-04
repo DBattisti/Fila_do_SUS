@@ -2,19 +2,23 @@
 #include <thread>
 #include <chrono>
 
-#define NUMPAT 10
 #define PUBTIMESTEP 10
 #define CONTIMESTEP 5
 
+/**
+    Cria um paciente em um tempo randomico de 0 a 10 segundos e printa a fila
+    O paciente criado recebe um @timeLeft randomico que varia de 30 a 720
+*/
 void patient_productor(SUSQueue *susq)
 {
     while (true)
     {
         Patient *p = new Patient;
-        p->timeLeft = rand() % 720;
+        //minimo 30 maximo 720
+        p->timeLeft = (rand() % 690) + 30;
 
         susq->Screening(*p);
-    
+
         cout << "Um paciente entrou na fila!" << endl;
         susq->PrintInLine();
 
@@ -27,6 +31,9 @@ void patient_productor(SUSQueue *susq)
     }
 }
 
+/**
+    Pega o proximo da fila de 5 em 5 segundos e printa a fila
+*/
 void patient_consumer(SUSQueue *susq)
 {
     while (true)
@@ -37,7 +44,6 @@ void patient_consumer(SUSQueue *susq)
 
             cout << "Um paciente foi atendido!" << endl;
             susq->PrintInLine();
-
         }
         catch (MyException e)
         {
@@ -54,47 +60,16 @@ void patient_consumer(SUSQueue *susq)
 
 int main(int argc, char const *argv[])
 {
-    // //Debugando a insercao dos nos
-    // //#######
-    // SUSQueue *susq = new SUSQueue;
-
-    // //Adiciona @NUMPAT pacientes na fila com tempos aleatorios
-    // for (int i = 0; i < NUMPAT; i++)
-    // {
-    //     Patient *p = new Patient;
-    //     p->timeLeft = ( rand() % 100 ) + 30 ;
-
-    //     susq->Screening(*p);
-    // }
-
-    // susq->Print();
-
-    // //Tenta remover @NUMPAT pacientes na fila
-    // for (int i = 0; i < NUMPAT; i++)
-    // {
-    //     try
-    //     {
-    //         Patient p = susq->NextOfQueue();
-    //         cout << p.maxTime << endl;
-    //     }
-    //     catch (MyException e)
-    //     {
-    //         cout << e.what() << endl;
-    //     }
-    // }
-
-    // //#######
-
     SUSQueue *susq = new SUSQueue;
 
     thread first(patient_productor, susq);
     thread second(patient_consumer, susq);
 
-    // synchronize threads:
-    first.join();  // pauses until first finishes
-    second.join(); // pauses until second finishes
+    // sincroniza as threads
+    first.join();
+    second.join();
 
     delete susq;
-    
+
     return 0;
 }

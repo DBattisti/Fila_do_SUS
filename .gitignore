@@ -4,3 +4,5 @@
 # exclude everything with .exe and .o
 *.exe
 *.o
+screening_log.txt
+treatment_log.txt
