@@ -1,4 +1,0 @@
-SAIU:: tempo corrente[30] tempo maximo paciente[71]
-SAIU:: tempo corrente[60] tempo maximo paciente[184]
-SAIU:: tempo corrente[90] tempo maximo paciente[528]
-SAIU:: tempo corrente[120] tempo maximo paciente[172]

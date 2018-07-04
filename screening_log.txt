@@ -1,5 +1,0 @@
-ENTROU:: tempo corrente[0] tempo restante[71] tempo maximo[71]
-ENTROU:: tempo corrente[30] tempo restante[154] tempo maximo[184]
-ENTROU:: tempo corrente[30] tempo restante[569] tempo maximo[599]
-ENTROU:: tempo corrente[60] tempo restante[468] tempo maximo[528]
-ENTROU:: tempo corrente[90] tempo restante[82] tempo maximo[172]
