@@ -10,7 +10,7 @@ using namespace std;
 
 /**
     Estrutura de cada paciente
-    @timeLeft 
+    @timeLeft tempo restante para piorar 
     @maxTime tempo maximo para piorar o seu estado de saude
 */
 struct Patient

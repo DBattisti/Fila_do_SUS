@@ -6,3 +6,4 @@
 *.o
 screening_log.txt
 treatment_log.txt
+main.txt
